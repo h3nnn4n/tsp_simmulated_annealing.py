@@ -16,13 +16,26 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.btn_reset_all.clicked.connect(self.resetAll)
 
         ################ DRAWING MAGIC ################
+        self.widget_temperature = drawingMachine(self.widget_temperature)
+        self.widget_temperature.setGeometry(QtCore.QRect(0, 0, 301, 211))
+        self.widget_temperature.setObjectName("widget_temperature")
+        self.widget_temperature.setIsTemp(True)
+        self.widget_temperature.update()
+
+        self.widget_objFunction = drawingMachine(self.widget_objFunction)
+        self.widget_objFunction.setGeometry(QtCore.QRect(0, 0, 301, 211))
+        self.widget_objFunction.setObjectName("widget_objFunction")
+        self.widget_objFunction.setIsTemp(False)
+        self.widget_objFunction.update()
+
         self.widget_graph = drawingMachine(self.widget_graph)
-        self.widget_graph.setGeometry(QtCore.QRect(0, 20, 611, 281))
+        self.widget_graph.setGeometry(QtCore.QRect(0, 0, 611, 281))
         self.widget_graph.setObjectName("widget_graph")
         self.widget_graph.update()
         ###############################################
 
         self.saEngine = simmulatedAnnealing()
+        self.saEngine.setDrawer(self.widget_temperature, self.widget_objFunction)
 
         self.s0       = None
         self.sa_iter  = None
@@ -35,11 +48,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.widget_graph.clearSol()
         self.s0      = None
         self.sa_iter = None
+        self.widget_temperature.clearData()
+        self.widget_objFunction.clearData()
 
     def runTsp(self):
         self.saEngine.updateConfig(self.t0.value(),
                                    self.tn.value(),
-                                   self.step_max.value())
+                                   self.step_max.value(),
+                                   self.step_plot.value())
 
         self.s0, energy, self.sa_iter, T = self.saEngine.step(self.widget_graph.getClicked(), self.step_size.value(), self.s0, self.sa_iter)
         self.widget_graph.updateSol(self.s0)
@@ -47,7 +63,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
     def runTspNext(self):
         self.saEngine.updateConfig(self.t0.value(),
                                    self.tn.value(),
-                                   self.step_max.value())
+                                   self.step_max.value(),
+                                   self.step_plot.value())
 
         self.s0, energy, self.sa_iter, T = self.saEngine.step(self.widget_graph.getClicked(), self.step_size.value(), self.s0, self.sa_iter, True)
         self.widget_graph.updateSol(self.s0)

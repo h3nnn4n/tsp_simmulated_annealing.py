@@ -3,25 +3,39 @@ from math import exp, cosh, sqrt
 
 class simmulatedAnnealing():
     def __init__(self):
-        self.t_0     = 20.0
-        self.t_n     = 0.0
-        self.T       = 0.1
-        self.maxIter = 10**3
+        self.t_0         = 20.0
+        self.t_n         = 0.0
+        self.T           = 0.1
+        self.maxIter     = 10**3
+        self.stepPlot    = 10
+        self.plotCounter = 0
+        self.drawerTemp  = None
+        self.drawerFunc  = None
 
-    def updateConfig(self, t0, tn, maxIter):
-        self.t_0     = t0
-        self.t_n     = tn
-        self.maxIter = maxIter
+    def setDrawer(self, temp, func):
+        self.drawerFunc = func
+        self.drawerTemp = temp
+        self.drawerFunc.setLimits(self.t_0, self.t_n, self.maxIter)
+        self.drawerTemp.setLimits(self.t_0, self.t_n, self.maxIter)
+
+    def updateConfig(self, t0, tn, maxIter, plot):
+        self.t_0      = t0
+        self.t_n      = tn
+        self.maxIter  = maxIter
+        self.stepPlot = plot
+        self.drawerFunc.setLimits(0   , 2200 , maxIter)
+        self.drawerTemp.setLimits(t0  , tn, maxIter)
 
     def step(self, graph, steps = 10, s0 = None, i = None, improves = False):
         j       = 0
         i       = 0 if i is None else i
         s0      = randomSolution(graph) if s0 is None else s0
 
-        t_0     = self.t_0
-        t_n     = self.t_n
-        T       = self.T
-        maxIter = self.maxIter
+        t_0         = self.t_0
+        t_n         = self.t_n
+        T           = self.T
+        maxIter     = self.maxIter
+        plotCounter = self.plotCounter
 
         while i < maxIter and j < steps:
             T =  (t_0 - t_n)/cosh((10.0*float(i)/float(maxIter)))
@@ -29,13 +43,17 @@ class simmulatedAnnealing():
             esn = energy(sn)
             es0 = energy(s0)
             if exp(-(esn - es0)/T) > random.random():
-                s0 = sn
+                s0  = sn
+                es0 = esn
 
             i += 1
+            self.plotCounter += 1
+            if self.plotCounter >= self.stepPlot or i == 1:
+                self.plotCounter = 0
+                self.drawerFunc.newPoint(i, es0)
+                self.drawerTemp.newPoint(i, T)
             if not improves:
                 j += 1
-
-            print(i, energy(s0), T)
 
             if esn < es0 and improves:
                 break
