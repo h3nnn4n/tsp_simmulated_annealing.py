@@ -11,6 +11,15 @@ class simmulatedAnnealing():
         self.plotCounter = 0
         self.drawerTemp  = None
         self.drawerFunc  = None
+        self.neighborFun = swap_adjacent
+
+    def setSwapFunction(self, index):
+        if index == 1:
+            self.neighborFun = swap_adjacent
+        elif index == 2:
+            self.neighborFun = swap_2
+        elif index == 3:
+            self.neighborFun = move_1
 
     def setDrawer(self, temp, func):
         self.drawerFunc = func
@@ -39,7 +48,7 @@ class simmulatedAnnealing():
 
         while i < maxIter and j < steps:
             T =  (t_0 - t_n)/cosh((10.0*float(i)/float(maxIter)))
-            sn = pertubate(s0.copy())
+            sn = self.pertubate(s0.copy())
             esn = energy(sn)
             es0 = energy(s0)
             if exp(-(esn - es0)/T) > random.random():
@@ -60,12 +69,30 @@ class simmulatedAnnealing():
 
         return s0, energy(s0), i, T
 
-def pertubate(g):
+    def pertubate(self, g):
+        self.neighborFun(g)
+        return g
+
+def swap_adjacent(g):
+    a    = random.randint(1, len(g) - 2)
+    b    = a + 1
+    p    = g[a]
+    g[a] = g[b]
+    g[b] = p
+    return g
+
+def swap_2(g):
     a    = random.randint(1, len(g) - 2)
     b    = random.randint(1, len(g) - 2)
     p    = g[a]
     g[a] = g[b]
     g[b] = p
+    return g
+
+def move_1(g):
+    a     = random.randint(1, len(g) - 2)
+    b     = random.randint(1, len(g) - 2)
+    g.insert(b, g.pop(a))
     return g
 
 def energy(g):

@@ -17,6 +17,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.btn_reset_sol.clicked.connect(self.resetSol)
         self.btn_reset_all.clicked.connect(self.resetAll)
         self.btn_random_points.clicked.connect(self.randomPoints)
+        self.swap_box.currentIndexChanged.connect(self.update_swapFunction)
 
         ################ DRAWING MAGIC ################
         self.widget_temperature = drawingMachine(self.widget_temperature)
@@ -42,6 +43,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
         self.s0       = None
         self.sa_iter  = None
+
+    def update_swapFunction(self):
+        self.saEngine.setSwapFunction( int(self.swap_box.currentIndex()) )
 
     def randomPoints(self):
         n    = int(self.n_points.text())
