@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="title">
-     <string/>
+     <string>Execution</string>
     </property>
     <widget class="QPushButton" name="btn_run">
      <property name="geometry">
@@ -84,7 +84,7 @@
        <x>0</x>
        <y>20</y>
        <width>301</width>
-       <height>211</height>
+       <height>210</height>
       </rect>
      </property>
      <widget class="QLabel" name="obj_label">
@@ -322,7 +322,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>210</y>
+       <y>190</y>
        <width>141</width>
        <height>23</height>
       </rect>
@@ -342,18 +342,61 @@
        <string>Move</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>Shuffle</string>
+      </property>
+     </item>
     </widget>
     <widget class="QLabel" name="label_7">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>190</y>
+       <y>170</y>
        <width>141</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
       <string>Neighbor Function:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="temp_box">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>240</y>
+       <width>141</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Linear</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Log</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Cosh</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>220</y>
+       <width>141</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Cooling Scheme:</string>
      </property>
     </widget>
    </widget>

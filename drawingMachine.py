@@ -82,8 +82,8 @@ class drawingMachine(QtGui.QWidget):
             self.tn = self.fx[0]
             self.t0 = self.fx[0]
             for i in self.fx:
-                self.tn = min(self.tn, i)
-                self.t0 = max(self.t0, i)
+                self.tn = min(self.tn, i + 10)
+                self.t0 = max(self.t0, i + 0 )
 
         for k, v in enumerate(zip(self.x, self.fx)):
             if k >= len(self.x) - 1:
@@ -91,12 +91,13 @@ class drawingMachine(QtGui.QWidget):
             x1, y1 = self.x[k+0], self.fx[k+0]
             x2, y2 = self.x[k+1], self.fx[k+1]
             if self.isTemp:
-                y1 = int(size.height() - ( y1 - self.tn ) / ( self.t0 - self.tn ) * size.height())
-                y2 = int(size.height() - ( y2 - self.tn ) / ( self.t0 - self.tn ) * size.height())
+                y1 = int(size.height() - ( y1 - self.tn ) / ( self.t0 - self.tn + 1 ) * size.height())
+                y2 = int(size.height() - ( y2 - self.tn ) / ( self.t0 - self.tn + 1 ) * size.height())
             else:
-                y1 = int(size.height() - ( y1 - self.tn ) / ( self.t0 - self.tn ) * size.height())
-                y2 = int(size.height() - ( y2 - self.tn ) / ( self.t0 - self.tn ) * size.height())
+                y1 = int(size.height() - ( y1 - self.tn ) / ( self.t0 - self.tn + 1 ) * size.height())
+                y2 = int(size.height() - ( y2 - self.tn ) / ( self.t0 - self.tn + 1 ) * size.height())
 
             x1 = int(( x1           ) / ( self.maxIter      ) * size.width() )
             x2 = int(( x2           ) / ( self.maxIter      ) * size.width() )
             qp.drawLine(x1, y1, x2, y2)
+

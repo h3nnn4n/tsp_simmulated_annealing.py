@@ -1,5 +1,5 @@
 import random
-from math import exp, cosh, sqrt
+from math import exp, cosh, sqrt, log, e
 
 class simmulatedAnnealing():
     def __init__(self):
@@ -12,14 +12,27 @@ class simmulatedAnnealing():
         self.drawerTemp  = None
         self.drawerFunc  = None
         self.neighborFun = swap_adjacent
+        self.tempFun     = linearTemp
+
+    def setTempFunction(self, index):
+        index += 1
+        if index == 1:
+            self.tempFun = linearTemp
+        elif index == 2:
+            self.tempFun = logTemp
+        elif index == 3:
+            self.tempFun = coshTemp
 
     def setSwapFunction(self, index):
+        index += 1
         if index == 1:
             self.neighborFun = swap_adjacent
         elif index == 2:
             self.neighborFun = swap_2
         elif index == 3:
             self.neighborFun = move_1
+        elif index == 4:
+            self.neighborFun = shuffle_2p
 
     def setDrawer(self, temp, func):
         self.drawerFunc = func
@@ -47,7 +60,7 @@ class simmulatedAnnealing():
         plotCounter = self.plotCounter
 
         while i < maxIter and j < steps:
-            T =  (t_0 - t_n)/cosh((10.0*float(i)/float(maxIter)))
+            T = self.tempFun(t_0, t_n, i, maxIter)
             sn = self.pertubate(s0.copy())
             esn = energy(sn)
             es0 = energy(s0)
@@ -95,6 +108,18 @@ def move_1(g):
     g.insert(b, g.pop(a))
     return g
 
+def shuffle_2p(g):
+    a, b = -1, -1
+    while a >= b:
+        a     = random.randint(1, len(g) - 4)
+        b     = random.randint(1, len(g) - 3)
+    g1 = g[:a ]
+    g2 = g[a:b]
+    g3 = g[b: ]
+    random.shuffle(g2)
+    gg = g1 + g2 + g3
+    return gg
+
 def energy(g):
     c = 0
     for i in range(0, len(g)-1):
@@ -110,3 +135,13 @@ def randomSolution(g):
     random.shuffle(g2)
     g2.append(g2[0])
     return g2
+
+def linearTemp(t_0, t_n, i, n):
+    return t_0 - i * (t_0 - t_n) / n
+
+def logTemp(t_0, t_n, i, n):
+    return t_0 - i ** ( log(t_0 - t_n, e) / log(n, e) )
+
+def coshTemp(t_0, t_n, i, n):
+    return (t_0 - t_n) / cosh( 10.0 * i / n )
+
