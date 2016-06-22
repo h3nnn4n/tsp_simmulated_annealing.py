@@ -3,6 +3,8 @@ from mainWindow         import *
 from drawingMachine     import *
 from tsp                import *
 
+from random             import randint
+
 import sys
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
@@ -11,9 +13,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.actionQuit.triggered.connect(self.close)
         self.btn_run.clicked.connect(self.runTsp)
-        self.btn_run_next.clicked.connect(self.runTspNext)
+        #self.btn_run_next.clicked.connect(self.runTspNext)
         self.btn_reset_sol.clicked.connect(self.resetSol)
         self.btn_reset_all.clicked.connect(self.resetAll)
+        self.btn_random_points.clicked.connect(self.randomPoints)
 
         ################ DRAWING MAGIC ################
         self.widget_temperature = drawingMachine(self.widget_temperature)
@@ -40,6 +43,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
         self.s0       = None
         self.sa_iter  = None
 
+    def randomPoints(self):
+        n    = int(self.n_points.text())
+        size = self.widget_graph.size()
+        for i in range(0, n):
+            x, y = randint(1, size.width()), randint(1, size.height())
+            self.widget_graph.clicked.add((x, y))
+
+        self.widget_graph.update()
+
     def resetAll(self):
         self.widget_graph.clearClicked()
         self.resetSol()
@@ -58,15 +70,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
                                    self.step_plot.value())
 
         self.s0, energy, self.sa_iter, T = self.saEngine.step(self.widget_graph.getClicked(), self.step_size.value(), self.s0, self.sa_iter)
-        self.widget_graph.updateSol(self.s0)
-
-    def runTspNext(self):
-        self.saEngine.updateConfig(self.t0.value(),
-                                   self.tn.value(),
-                                   self.step_max.value(),
-                                   self.step_plot.value())
-
-        self.s0, energy, self.sa_iter, T = self.saEngine.step(self.widget_graph.getClicked(), self.step_size.value(), self.s0, self.sa_iter, True)
+        self.temp_label.setText(str(T))
+        self.obj_label.setText(str(energy))
         self.widget_graph.updateSol(self.s0)
 
 if __name__ == "__main__":

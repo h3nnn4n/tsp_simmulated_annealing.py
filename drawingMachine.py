@@ -78,6 +78,13 @@ class drawingMachine(QtGui.QWidget):
         qp.setPen(QtGui.QPen(QtGui.QColor(255, 0, 0), 1))
         size = self.size()
 
+        if not self.isTemp and len(self.x) > 0:
+            self.tn = self.fx[0]
+            self.t0 = self.fx[0]
+            for i in self.fx:
+                self.tn = min(self.tn, i)
+                self.t0 = max(self.t0, i)
+
         for k, v in enumerate(zip(self.x, self.fx)):
             if k >= len(self.x) - 1:
                 continue
@@ -87,8 +94,8 @@ class drawingMachine(QtGui.QWidget):
                 y1 = int(size.height() - ( y1 - self.tn ) / ( self.t0 - self.tn ) * size.height())
                 y2 = int(size.height() - ( y2 - self.tn ) / ( self.t0 - self.tn ) * size.height())
             else:
-                y1 = int(                ( y1 - self.tn ) / ( self.t0 - self.tn ) * size.height())
-                y2 = int(                ( y2 - self.tn ) / ( self.t0 - self.tn ) * size.height())
+                y1 = int(size.height() - ( y1 - self.tn ) / ( self.t0 - self.tn ) * size.height())
+                y2 = int(size.height() - ( y2 - self.tn ) / ( self.t0 - self.tn ) * size.height())
 
             x1 = int(( x1           ) / ( self.maxIter      ) * size.width() )
             x2 = int(( x2           ) / ( self.maxIter      ) * size.width() )
